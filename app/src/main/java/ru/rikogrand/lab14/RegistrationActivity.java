@@ -55,6 +55,7 @@ public class RegistrationActivity extends AppCompatActivity {
                 calendar.get(Calendar.DAY_OF_MONTH)
         );
 
+
         editTextDateOfBirth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -92,10 +93,17 @@ public class RegistrationActivity extends AppCompatActivity {
         String repeatPassword = editTextRepeatPassword.getText().toString();
         boolean rememberMe = checkBoxRememberMe.isChecked();
 
+
+
         if (!isValidEmail(email)) {
             editTextEmail.setError("Неверный email адрес");
             return false;
         }
+        if(!isEmailAlreadyInUse(email)){
+            editTextEmail.setError("Данная почта уже используется");
+            return false;
+        }
+
 
         if (!isValidPhoneNumber(number)) {
             editTextNumber.setError("Неверный номер телефона");
@@ -116,6 +124,8 @@ public class RegistrationActivity extends AppCompatActivity {
             editTextRepeatPassword.setError("Пароли не совпадают");
             return false;
         }
+
+
 
         SharedPreferences preferences = getSharedPreferences("user_data", MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
@@ -149,8 +159,23 @@ public class RegistrationActivity extends AppCompatActivity {
         }
 
         return true;
-    }
 
+    }
+    private boolean isEmailAlreadyInUse(String email) {
+        SharedPreferences preferences = getSharedPreferences("user_data", MODE_PRIVATE);
+        if(preferences.contains("email") && preferences.getString("email", "").equals(email)) {
+            return false;
+        }
+        else {
+        return true;
+
+        }
+
+
+       // SharedPreferences preferences = getSharedPreferences("user_data", MODE_PRIVATE);
+      //  String existingEmail = preferences.getString("email", "");
+       // return existingEmail.equals(email);
+    }
     private boolean isValidPhoneNumber(String number) {
         if (number == null || number.isEmpty()) {
             return false;
